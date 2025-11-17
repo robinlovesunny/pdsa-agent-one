@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>知识库文档管理后台</title>
+    <link rel="stylesheet" href="admin-style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 知识库文档管理后台</h1>
+            <p class="subtitle">通过AI将网页内容整理为Markdown文档</p>
+        </header>
+
+        <main>
+            <div class="form-section">
+                <div class="form-group">
+                    <label for="webUrl">网页URL</label>
+                    <input 
+                        type="url" 
+                        id="webUrl" 
+                        placeholder="请输入要整理的网页链接，例如：https://example.com/article" 
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="webContent">或直接粘贴网页内容</label>
+                    <textarea 
+                        id="webContent" 
+                        rows="10" 
+                        placeholder="粘贴网页的HTML或文本内容..."
+                    ></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="fileName">文件名（可选）</label>
+                    <input 
+                        type="text" 
+                        id="fileName" 
+                        placeholder="留空则自动生成，例如：product-guide"
+                    >
+                    <small>文件会自动添加.md后缀和时间戳避免重名</small>
+                </div>
+
+                <button id="generateBtn" class="btn-primary">
+                    <span id="btnText">🚀 生成Markdown文档</span>
+                    <span id="btnLoading" class="loading" style="display: none;">⏳ 处理中...</span>
+                </button>
+            </div>
+
+            <div class="result-section" id="resultSection" style="display: none;">
+                <h2>✅ 生成结果</h2>
+                <div class="result-info">
+                    <p><strong>文件路径:</strong> <code id="filePath"></code></p>
+                    <p><strong>生成时间:</strong> <span id="createTime"></span></p>
+                </div>
+                <div class="preview-box">
+                    <h3>Markdown预览</h3>
+                    <pre id="markdownPreview"></pre>
+                </div>
+            </div>
+
+            <div class="error-section" id="errorSection" style="display: none;">
+                <h2>❌ 处理失败</h2>
+                <p id="errorMessage"></p>
+            </div>
+        </main>
+
+        <footer>
+            <a href="/">← 返回主页</a>
+        </footer>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+# ============================================
+# PDSA数字分身智能体 - Python依赖清单
+# ============================================
+# 安装命令: pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple/
+# 说明: 使用清华大学镜像源加速下载
+# ============================================
+
+# Web框架
+Flask>=2.3.0
+
+# 跨域支持
+flask-cors>=4.0.0
+
+# 阿里云百炼DashScope SDK
+dashscope
+
+# 环境变量管理
+python-dotenv>=1.0.0
+
+# 网页内容抓取
+requests>=2.31.0
+beautifulsoup4>=4.12.0

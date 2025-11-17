@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🤖 个人数字分身 - PDSA智能体</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- 主容器 -->
+    <div class="container">
+        <!-- 顶部标题区域 -->
+        <header>
+            <h1>🤖 个人数字分身</h1>
+            <p>基于你的知识库回答问题</p>
+        </header>
+
+        <!-- 聊天消息区域 -->
+        <div class="chat-container">
+            <div class="messages" id="messagesContainer">
+                <!-- 欢迎消息 -->
+                <div class="message bot">
+                    <div class="message-content">
+                        👋 你好!我是你的个人数字分身,基于你的知识库为你提供智能对话服务。有什么可以帮到你的吗?
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部输入区域 -->
+        <div class="input-container">
+            <input 
+                type="text" 
+                id="userInput" 
+                placeholder="输入你的问题..."
+                autocomplete="off"
+            >
+            <button id="sendBtn">发送</button>
+        </div>
+    </div>
+
+    <!-- 引入JavaScript脚本 -->
+    <script src="app.js"></script>
+</body>
+</html>

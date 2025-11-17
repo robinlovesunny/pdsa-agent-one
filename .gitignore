@@ -1,0 +1,38 @@
+# ============================================
+# PDSA数字分身智能体 - Git忽略配置
+# ============================================
+
+# 环境变量文件(包含敏感信息)
+.env
+
+# Python缓存文件
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# 对话日志文件
+backend/chat_logs.txt
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# Python虚拟环境
+venv/
+env/
+ENV/
+*.virtualenv
+
+# 日志文件
+*.log
+
+# IDE配置文件
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 临时文件
+*.tmp
+*.bak

@@ -1,0 +1,92 @@
+@startuml
+
+title PDSA数字分身智能体 - 系统架构图
+
+actor 用户 as User
+
+' 前端层
+package "前端层 (Frontend)" {
+    component "index.html\n主页面界面" as IndexHTML
+    component "admin.html\n管理后台界面" as AdminHTML
+    component "app.js\n聊天交互逻辑" as AppJS
+    component "admin.js\n后台管理逻辑" as AdminJS
+    component "style.css\n主页样式" as StyleCSS
+    component "admin-style.css\n后台样式" as AdminStyleCSS
+}
+
+' 后端层
+package "后端层 (Backend)" {
+    component "Flask App\napp.py" as FlaskApp
+    
+    component "/api/chat" as ChatAPI
+    component "/api/admin/generate-doc" as GenDocAPI
+    component "/api/health" as HealthAPI
+    component "静态文件服务" as StaticAPI
+    
+    component "百炼对话\ncall_bailian_api()" as BaiLianChat
+    component "文档生成\ncall_doc_generation_api()" as DocGen
+    component "网页爬虫\nfetch_web_content()" as WebCrawler
+    component "日志记录\nlog_chat()" as Logger
+    component "文件管理\ngenerate_unique_filename()" as FileManager
+}
+
+' 数据存储层
+package "数据存储层" {
+    database "本地文件系统\nchat_logs.txt\ndocs/*.md" as LocalFS
+    database "环境配置\n.env" as EnvConfig
+}
+
+cloud "阿里云服务" as AliCloud {
+    component "百炼平台\nRAG应用" as BaiLian
+    component "DashScope API\nApplication.call()" as DashScope
+    database "知识库\nabout_me.md\nskills.md\nprojects.md" as KnowledgeBase
+}
+
+package "依赖库" {
+    component "Flask" as Flask
+    component "Flask-CORS" as FlaskCORS
+    component "python-dotenv" as DotEnv
+    component "dashscope SDK" as DashScopeSDK
+    component "requests" as Requests
+    component "BeautifulSoup4" as BS4
+}
+
+User --> IndexHTML
+User --> AdminHTML
+
+IndexHTML --> AppJS
+IndexHTML --> StyleCSS
+AdminHTML --> AdminJS
+AdminHTML --> AdminStyleCSS
+
+AppJS --> ChatAPI
+AdminJS --> GenDocAPI
+AppJS --> StaticAPI
+
+ChatAPI --> BaiLianChat
+GenDocAPI --> DocGen
+GenDocAPI --> WebCrawler
+
+BaiLianChat --> Logger
+BaiLianChat --> DashScope
+DocGen --> DashScope
+DocGen --> FileManager
+WebCrawler --> Requests
+WebCrawler --> BS4
+FileManager --> LocalFS
+Logger --> LocalFS
+
+DashScope --> BaiLian
+BaiLian --> KnowledgeBase
+
+FlaskApp --> EnvConfig
+BaiLianChat --> EnvConfig
+DocGen --> EnvConfig
+
+FlaskApp --> Flask
+FlaskApp --> FlaskCORS
+FlaskApp --> DotEnv
+BaiLianChat --> DashScopeSDK
+DocGen --> DashScopeSDK
+
+@enduml

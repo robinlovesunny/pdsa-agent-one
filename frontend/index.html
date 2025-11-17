@@ -11,8 +11,8 @@
     <div class="container">
         <!-- 顶部标题区域 -->
         <header>
-            <h1>🤖 个人数字分身</h1>
-            <p>基于你的知识库回答问题</p>
+            <h1>🤖 Robin</h1>
+            <p>由Vibe Coding打造的Qteam数字小蜜，常见的产品问题都可以来问我呦！</p>
         </header>
 
         <!-- 聊天消息区域 -->
@@ -21,7 +21,7 @@
                 <!-- 欢迎消息 -->
                 <div class="message bot">
                     <div class="message-content">
-                        👋 你好!我是你的个人数字分身,基于你的知识库为你提供智能对话服务。有什么可以帮到你的吗?
+                        👋 你好! 我是Robin，将为你提供智能答疑服务。有什么可以帮到你的吗?
                     </div>
                 </div>
             </div>
@@ -32,13 +32,16 @@
             <input 
                 type="text" 
                 id="userInput" 
-                placeholder="输入你的问题..."
+                placeholder="输入您的问题..."
                 autocomplete="off"
             >
             <button id="sendBtn">发送</button>
         </div>
     </div>
 
+    <!-- 引入Markdown渲染库 -->
+    <script src="https://cdn.jsdelivr.net/npm/marked@11.1.0/marked.min.js"></script>
+    
     <!-- 引入JavaScript脚本 -->
     <script src="app.js"></script>
 </body>

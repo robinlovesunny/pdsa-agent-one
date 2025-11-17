@@ -187,7 +187,41 @@ function addMessage(text, type) {
     // 创建消息内容
     const contentDiv = document.createElement('div');
     contentDiv.className = 'message-content';
-    contentDiv.textContent = text;
+    
+    // 处理引用标记并渲染
+    if (type === 'bot') {
+        try {
+            let processedText = text;
+            
+            // 先处理引用标记，避免被转义
+            processedText = processedText.replace(
+                /<ref>\[(\d+)\]<\/ref>/g,
+                '<sup class="reference" title="点击查看引用来源">[$1]</sup>'
+            );
+            
+            // 使用marked渲染Markdown (兼容判断)
+            if (typeof marked !== 'undefined') {
+                // 兼容marked v11+和v10-的版本
+                if (typeof marked.parse === 'function') {
+                    contentDiv.innerHTML = marked.parse(processedText);
+                } else if (typeof marked === 'function') {
+                    contentDiv.innerHTML = marked(processedText);
+                } else {
+                    throw new Error('marked库加载异常');
+                }
+            } else {
+                // 降级方案：如果marked未加载，使用原有逻辑
+                console.warn('[Markdown] marked库未加载，使用降级渲染');
+                contentDiv.innerHTML = formatReferences(escapeHTML(processedText));
+            }
+        } catch (error) {
+            // 错误处理：如果Markdown渲染失败，使用原有逻辑
+            console.error('[Markdown] 渲染失败:', error);
+            contentDiv.innerHTML = formatReferences(escapeHTML(text));
+        }
+    } else {
+        contentDiv.textContent = text;
+    }
     
     // 组装DOM结构
     messageDiv.appendChild(contentDiv);
@@ -265,6 +299,30 @@ function escapeHTML(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+}
+
+// ========================================
+// 工具函数 - 格式化引用标记
+// ========================================
+function formatReferences(text) {
+    /**
+     * 将<ref>[数字]</ref>格式的引用标记转换为上标样式
+     * 
+     * 参数:
+     *   text (string): 已转义的HTML文本
+     * 
+     * 返回:
+     *   string: 处理后的HTML文本
+     * 
+     * 示例:
+     *   输入: "这是内容&lt;ref&gt;[1]&lt;/ref&gt;"
+     *   输出: "这是内容<sup class='reference'>[1]</sup>"
+     */
+    // 匹配 &lt;ref&gt;[数字]&lt;/ref&gt; 格式
+    return text.replace(
+        /&lt;ref&gt;\[(\d+)\]&lt;\/ref&gt;/g,
+        '<sup class="reference" title="点击查看引用来源">[$1]</sup>'
+    );
 }
 
 // ========================================

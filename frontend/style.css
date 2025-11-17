@@ -170,6 +170,125 @@ header p {
 }
 
 /* ========================================
+   Markdown样式优化 - AI消息
+   ======================================== */
+/* 标题样式 */
+.message.bot .message-content h1,
+.message.bot .message-content h2,
+.message.bot .message-content h3 {
+    color: #00ff88;
+    margin-top: 12px;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.message.bot .message-content h1 {
+    font-size: 20px;
+    border-bottom: 2px solid rgba(0, 255, 136, 0.3);
+    padding-bottom: 6px;
+}
+
+.message.bot .message-content h2 {
+    font-size: 18px;
+}
+
+.message.bot .message-content h3 {
+    font-size: 16px;
+    color: rgba(0, 255, 136, 0.8);
+}
+
+/* 列表样式 */
+.message.bot .message-content ul,
+.message.bot .message-content ol {
+    margin: 10px 0;
+    padding-left: 25px;
+}
+
+.message.bot .message-content li {
+    margin: 6px 0;
+    line-height: 1.6;
+}
+
+.message.bot .message-content ul li {
+    list-style-type: disc;
+}
+
+/* 粗体和斜体样式 */
+.message.bot .message-content strong {
+    color: #00ff88;
+    font-weight: bold;
+}
+
+.message.bot .message-content em {
+    color: rgba(0, 255, 136, 0.8);
+    font-style: italic;
+}
+
+/* 代码块样式 */
+.message.bot .message-content code {
+    background: rgba(0, 255, 136, 0.1);
+    color: #00ff88;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 14px;
+}
+
+.message.bot .message-content pre {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 10px;
+    border-radius: 5px;
+    overflow-x: auto;
+    margin: 10px 0;
+}
+
+.message.bot .message-content pre code {
+    background: none;
+    padding: 0;
+}
+
+/* 引用样式 */
+.message.bot .message-content blockquote {
+    border-left: 3px solid #00ff88;
+    padding-left: 12px;
+    margin: 10px 0;
+    color: rgba(255, 255, 255, 0.7);
+    font-style: italic;
+}
+
+/* 段落间距 */
+.message.bot .message-content p {
+    margin: 8px 0;
+}
+
+/* 水平分割线 */
+.message.bot .message-content hr {
+    border: none;
+    border-top: 1px solid rgba(0, 255, 136, 0.3);
+    margin: 15px 0;
+}
+
+/* ========================================
+   引用标记样式
+   ======================================== */
+/* 引用上标样式 */
+.reference {
+    color: #00ff88;
+    font-weight: bold;
+    cursor: help;
+    margin-left: 2px;
+    font-size: 0.8em;
+    padding: 0 2px;
+    border-radius: 3px;
+    transition: all 0.2s ease;
+}
+
+.reference:hover {
+    background: rgba(0, 255, 136, 0.2);
+    transform: scale(1.1);
+}
+
+/* ========================================
    底部输入区域样式
    ======================================== */
 .input-container {

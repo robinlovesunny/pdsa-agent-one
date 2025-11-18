@@ -132,6 +132,19 @@ header p {
 /* AI消息样式 - 左对齐 */
 .message.bot {
     justify-content: flex-start;
+    align-items: flex-start;
+}
+
+/* AI头像样式 */
+.bot-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 12px;
+    flex-shrink: 0;
+    object-fit: cover;
+    box-shadow: 0 2px 8px rgba(0, 255, 136, 0.3);
+    border: 2px solid rgba(0, 255, 136, 0.4);
 }
 
 .message.bot .message-content {

@@ -184,6 +184,15 @@ function addMessage(text, type) {
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${type}`;
     
+    // 如果是bot消息,添加头像
+    if (type === 'bot') {
+        const avatar = document.createElement('img');
+        avatar.src = 'robin-image.jpg';
+        avatar.alt = 'Robin';
+        avatar.className = 'bot-avatar';
+        messageDiv.appendChild(avatar);
+    }
+    
     // 创建消息内容
     const contentDiv = document.createElement('div');
     contentDiv.className = 'message-content';

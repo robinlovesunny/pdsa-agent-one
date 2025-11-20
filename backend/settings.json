@@ -1,0 +1,6 @@
+{
+  "logCleanup": {
+    "strategy": "never",
+    "cleanupTime": "02:00"
+  }
+}

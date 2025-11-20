@@ -38,7 +38,10 @@ cd backend
 pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple/
 ```
 
-然后访问: **http://localhost:5000**
+然后访问: 
+- **主页面**: http://localhost:5000
+- **管理后台**: http://localhost:5000/admin.html
+- **设置页面**: http://localhost:5000/settings.html
 
 ## ✅ 配置检查清单
 
@@ -61,12 +64,19 @@ pdsa-agent-one/
 ├── backend/              # 后端服务
 │   ├── app.py           # Flask主程序 ⭐核心文件
 │   ├── requirements.txt # Python依赖
+│   ├── settings.json    # 后台配置文件
 │   └── .env.example     # 环境变量模板
 │
 ├── frontend/             # 前端资源
 │   ├── index.html       # 主页面
-│   ├── style.css        # 样式表
-│   └── app.js           # 交互逻辑
+│   ├── style.css        # 主页样式
+│   ├── app.js           # 主页交互逻辑
+│   ├── admin.html       # 管理后台页面
+│   ├── admin.js         # 后台交互逻辑
+│   ├── admin-style.css  # 后台样式
+│   ├── settings.html    # 设置页面
+│   ├── settings.js      # 设置交互逻辑
+│   └── settings-style.css # 设置样式
 │
 ├── knowledge/            # 知识库示例文件
 │   ├── about_me.md      # 个人介绍
@@ -85,6 +95,8 @@ pdsa-agent-one/
 - ✅ 智能对话 - 基于知识库的问答
 - ✅ 多轮对话 - 上下文记忆
 - ✅ 日志记录 - 自动保存对话历史
+- ✅ 设置管理 - 可视化配置后台参数
+- ✅ 管理后台 - 查看对话日志和系统状态
 - ✅ 深色主题 - 科技感UI设计
 - ✅ 响应式布局 - 适配多种设备
 
@@ -129,6 +141,8 @@ pdsa-agent-one/
 - [x] 配置文件和文档
 - [x] 知识库示例
 - [x] 启动脚本
+- [x] 设置管理功能
+- [x] 管理后台页面
 - [ ] 单元测试
 - [ ] 部署到云端
 

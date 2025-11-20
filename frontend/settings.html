@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>系统设置 - 日志管理</title>
+    <link rel="stylesheet" href="settings-style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚙️ 系统设置</h1>
+            <p class="subtitle">管理日志存储策略和系统配置</p>
+        </header>
+
+        <main>
+            <!-- 日志清理策略设置 -->
+            <div class="settings-section">
+                <h2>📝 日志清理策略</h2>
+                <p class="section-desc">选择日志文件的自动清理方式</p>
+
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="cleanupStrategy" value="never" checked>
+                        <div class="radio-content">
+                            <div class="radio-title">🔒 永不清除</div>
+                            <div class="radio-desc">保留所有日志记录,不进行自动清理</div>
+                        </div>
+                    </label>
+
+                    <label class="radio-option">
+                        <input type="radio" name="cleanupStrategy" value="daily">
+                        <div class="radio-content">
+                            <div class="radio-title">📅 每天定时清理</div>
+                            <div class="radio-desc">每天凌晨自动清理日志文件</div>
+                        </div>
+                    </label>
+
+                    <label class="radio-option">
+                        <input type="radio" name="cleanupStrategy" value="weekly">
+                        <div class="radio-content">
+                            <div class="radio-title">📆 每周定时清理</div>
+                            <div class="radio-desc">每周一凌晨自动清理日志文件</div>
+                        </div>
+                    </label>
+
+                    <label class="radio-option">
+                        <input type="radio" name="cleanupStrategy" value="immediate">
+                        <div class="radio-content">
+                            <div class="radio-title">🗑️ 立即清理</div>
+                            <div class="radio-desc">立即清空当前所有日志记录</div>
+                        </div>
+                    </label>
+                </div>
+
+                <div class="time-selector" id="timeSelector" style="display: none;">
+                    <label for="cleanupTime">⏰ 清理时间</label>
+                    <input type="time" id="cleanupTime" value="02:00">
+                    <small>设置每日或每周自动清理的时间点</small>
+                </div>
+
+                <div class="button-group">
+                    <button id="saveBtn" class="btn-primary">
+                        <span id="saveBtnText">💾 保存设置</span>
+                        <span id="saveBtnLoading" class="loading" style="display: none;">⏳ 保存中...</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 当前日志状态 -->
+            <div class="status-section">
+                <h2>📊 日志状态</h2>
+                <div class="status-grid">
+                    <div class="status-item">
+                        <div class="status-label">日志文件路径</div>
+                        <div class="status-value" id="logPath">-</div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-label">日志条数</div>
+                        <div class="status-value" id="logCount">-</div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-label">文件大小</div>
+                        <div class="status-value" id="logSize">-</div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-label">最后更新</div>
+                        <div class="status-value" id="lastUpdate">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 成功提示 -->
+            <div class="success-section" id="successSection" style="display: none;">
+                <h2>✅ 操作成功</h2>
+                <p id="successMessage"></p>
+            </div>
+
+            <!-- 错误提示 -->
+            <div class="error-section" id="errorSection" style="display: none;">
+                <h2>❌ 操作失败</h2>
+                <p id="errorMessage"></p>
+            </div>
+        </main>
+
+        <footer>
+            <a href="/">← 返回主页</a>
+            <span class="divider">|</span>
+            <a href="/admin.html">📚 文档管理</a>
+        </footer>
+    </div>
+
+    <script src="settings.js"></script>
+</body>
+</html>

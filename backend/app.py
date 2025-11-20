@@ -23,6 +23,8 @@ from http import HTTPStatus
 from dashscope import Application
 import requests
 from bs4 import BeautifulSoup
+import threading
+import schedule
 
 # ========================================
 # 配置加载区域
@@ -98,6 +100,9 @@ CORS(app)  # 启用跨域支持,允许前端访问API
 # 设置日志文件路径
 LOG_FILE = os.path.join(os.path.dirname(__file__), 'chat_logs.txt')
 
+# 设置配置文件路径
+SETTINGS_FILE = os.path.join(os.path.dirname(__file__), 'settings.json')
+
 # 设置文档存储目录
 DOCS_DIR = os.path.join(os.path.dirname(__file__), '..', 'docs')
 
@@ -109,6 +114,14 @@ if not os.path.exists(DOCS_DIR):
 # 注意: 如果下面的APP_ID无法使用,将会降级使用现有的百炼应用
 DOC_APP_ID = os.getenv('DOC_APP_ID', 'af2071542ff0433c92d8c0d3f18595ce')
 DOC_API_KEY = os.getenv('DOC_API_KEY', 'sk-2b88c624bb4748e8b058f49a9d4c33f1')
+
+# 默认设置
+DEFAULT_SETTINGS = {
+    'logCleanup': {
+        'strategy': 'never',  # never, daily, weekly, immediate
+        'cleanupTime': '02:00'  # 清理时间
+    }
+}
 
 
 # ========================================
@@ -354,6 +367,130 @@ def log_chat(user_message, bot_reply, prefix=""):
         print(f"日志记录失败: {e}")
 
 
+def load_settings():
+    """
+    加载系统设置
+    
+    返回:
+        dict: 设置字典
+    """
+    try:
+        if os.path.exists(SETTINGS_FILE):
+            with open(SETTINGS_FILE, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        else:
+            return DEFAULT_SETTINGS.copy()
+    except Exception as e:
+        print(f"加载设置失败: {e}")
+        return DEFAULT_SETTINGS.copy()
+
+
+def save_settings(settings):
+    """
+    保存系统设置
+    
+    参数:
+        settings (dict): 设置字典
+    """
+    try:
+        with open(SETTINGS_FILE, 'w', encoding='utf-8') as f:
+            json.dump(settings, f, ensure_ascii=False, indent=2)
+        return True
+    except Exception as e:
+        print(f"保存设置失败: {e}")
+        return False
+
+
+def clear_log_file():
+    """
+    清空日志文件
+    """
+    try:
+        with open(LOG_FILE, 'w', encoding='utf-8') as f:
+            f.write('')
+        print(f"[日志清理] 日志文件已清空")
+        return True
+    except Exception as e:
+        print(f"[日志清理] 清空日志失败: {e}")
+        return False
+
+
+def get_log_stats():
+    """
+    获取日志文件统计信息
+    
+    返回:
+        dict: 日志统计信息
+    """
+    try:
+        if not os.path.exists(LOG_FILE):
+            return {
+                'logPath': LOG_FILE,
+                'logCount': 0,
+                'logSize': 0,
+                'lastUpdate': '-'
+            }
+        
+        # 获取文件大小
+        file_size = os.path.getsize(LOG_FILE)
+        
+        # 获取最后修改时间
+        last_update_timestamp = os.path.getmtime(LOG_FILE)
+        last_update = datetime.fromtimestamp(last_update_timestamp).strftime('%Y-%m-%d %H:%M:%S')
+        
+        # 统计日志条数(通过分隔符"---"计数)
+        with open(LOG_FILE, 'r', encoding='utf-8') as f:
+            content = f.read()
+            log_count = content.count('---')
+        
+        return {
+            'logPath': LOG_FILE,
+            'logCount': log_count,
+            'logSize': file_size,
+            'lastUpdate': last_update
+        }
+    except Exception as e:
+        print(f"获取日志统计失败: {e}")
+        return {
+            'logPath': LOG_FILE,
+            'logCount': 0,
+            'logSize': 0,
+            'lastUpdate': '-'
+        }
+
+
+def schedule_log_cleanup():
+    """
+    定时任务:根据设置执行日志清理
+    """
+    settings = load_settings()
+    strategy = settings.get('logCleanup', {}).get('strategy', 'never')
+    cleanup_time = settings.get('logCleanup', {}).get('cleanupTime', '02:00')
+    
+    # 清除之前的所有任务
+    schedule.clear()
+    
+    if strategy == 'daily':
+        # 每天定时清理
+        schedule.every().day.at(cleanup_time).do(clear_log_file)
+        print(f"[定时任务] 已设置每天{cleanup_time}清理日志")
+    elif strategy == 'weekly':
+        # 每周一定时清理
+        schedule.every().monday.at(cleanup_time).do(clear_log_file)
+        print(f"[定时任务] 已设置每周一{cleanup_time}清理日志")
+    elif strategy == 'never':
+        print(f"[定时任务] 日志清理已禁用")
+
+
+def run_schedule():
+    """
+    在后台线程中运行定时任务
+    """
+    while True:
+        schedule.run_pending()
+        time.sleep(60)  # 每分钟检查一次
+
+
 # ========================================
 # API路由定义
 # ========================================
@@ -509,6 +646,130 @@ def generate_doc():
         }), 500
 
 
+@app.route('/api/settings/log-cleanup', methods=['GET', 'POST'])
+def log_cleanup_settings():
+    """
+    日志清理设置接口
+    
+    GET: 获取当前设置
+    POST: 保存新设置
+    
+    请求格式(POST):
+        {
+            "strategy": "never|daily|weekly|immediate",
+            "cleanupTime": "HH:MM"
+        }
+    
+    响应格式:
+        成功: {"success": true, "strategy": "...", "cleanupTime": "..."}
+        失败: {"success": false, "error": "..."}
+    """
+    try:
+        if request.method == 'GET':
+            # 获取当前设置
+            settings = load_settings()
+            log_cleanup = settings.get('logCleanup', DEFAULT_SETTINGS['logCleanup'])
+            
+            return jsonify({
+                "success": True,
+                "strategy": log_cleanup.get('strategy', 'never'),
+                "cleanupTime": log_cleanup.get('cleanupTime', '02:00')
+            })
+        
+        else:  # POST
+            data = request.get_json()
+            
+            if not data:
+                return jsonify({
+                    "success": False,
+                    "error": "缺少请求数据"
+                }), 400
+            
+            strategy = data.get('strategy')
+            cleanup_time = data.get('cleanupTime', '02:00')
+            
+            # 验证策略
+            if strategy not in ['never', 'daily', 'weekly', 'immediate']:
+                return jsonify({
+                    "success": False,
+                    "error": "无效的清理策略"
+                }), 400
+            
+            # 加载当前设置
+            settings = load_settings()
+            
+            # 更新设置
+            settings['logCleanup'] = {
+                'strategy': strategy,
+                'cleanupTime': cleanup_time
+            }
+            
+            # 保存设置
+            if not save_settings(settings):
+                return jsonify({
+                    "success": False,
+                    "error": "保存设置失败"
+                }), 500
+            
+            # 如果是立即清理,执行清理操作
+            if strategy == 'immediate':
+                clear_log_file()
+                message = "日志已立即清空"
+                # 清空后将策略重置为never
+                settings['logCleanup']['strategy'] = 'never'
+                save_settings(settings)
+            else:
+                message = "设置已保存"
+                # 重新安排定时任务
+                schedule_log_cleanup()
+            
+            return jsonify({
+                "success": True,
+                "message": message,
+                "strategy": strategy,
+                "cleanupTime": cleanup_time
+            })
+    
+    except Exception as e:
+        error_msg = f"处理请求失败: {str(e)}"
+        print(error_msg)
+        return jsonify({
+            "success": False,
+            "error": "服务器错误"
+        }), 500
+
+
+@app.route('/api/logs/status', methods=['GET'])
+def log_status():
+    """
+    日志状态查询接口
+    
+    响应格式:
+        {
+            "success": true,
+            "logPath": "路径",
+            "logCount": 数量,
+            "logSize": 字节数,
+            "lastUpdate": "时间"
+        }
+    """
+    try:
+        stats = get_log_stats()
+        
+        return jsonify({
+            "success": True,
+            **stats
+        })
+    
+    except Exception as e:
+        error_msg = f"获取日志状态失败: {str(e)}"
+        print(error_msg)
+        return jsonify({
+            "success": False,
+            "error": "服务器错误"
+        }), 500
+
+
 @app.route('/api/chat', methods=['POST'])
 def chat():
     """
@@ -594,6 +855,12 @@ if __name__ == '__main__':
     print("=" * 60)
     print("✅ 配置验证通过,服务器启动中...")
     print("=" * 60)
+    
+    # 启动定时任务线程
+    schedule_log_cleanup()
+    schedule_thread = threading.Thread(target=run_schedule, daemon=True)
+    schedule_thread.start()
+    print("✅ 定时任务线程已启动")
     
     # 启动Flask应用
     # debug: 开发模式下启用调试和热加载
